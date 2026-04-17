@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SparkLink 星火鏈 | 創客與學生集資平台</title>
+    <style>
+        /* --- 全域設定與變數 --- */
+        :root {
+            --tech-blue: #0f172a;
+            --neon-orange: #f97316;
+            --light-gray: #e2e8f0;
+            --bg-color: #f8fafc;
+            --text-main: #334155;
+            --text-muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+
+        /* --- 導覽列 (Navbar) --- */
+        nav {
+            background-color: var(--tech-blue);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--neon-orange); text-decoration: none; cursor: pointer; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links button {
+            background: none; border: none; color: white; font-size: 1rem; margin-left: 20px; cursor: pointer; transition: 0.3s;
+        }
+        .nav-links button:hover { color: var(--neon-orange); }
+        .btn-nav-primary {
+            background-color: var(--neon-orange) !important;
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* --- 頁面切換機制 --- */
+        .page { display: none; min-height: 80vh; animation: fadeIn 0.4s ease-in-out; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- 共用排版元件 --- */
+        .container { width: 90%; max-width: 1200px; margin: 40px auto; }
+        .section-title { font-size: 2rem; margin-bottom: 30px; border-left: 6px solid var(--neon-orange); padding-left: 15px; }
+        .btn-full { width: 100%; padding: 14px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; text-align: center; }
+        
+        /* --- 進度條元件 --- */
+        .progress-container { width: 100%; background-color: var(--light-gray); border-radius: 10px; height: 12px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { background-color: var(--neon-orange); height: 100%; border-radius: 10px; transition: width 1s ease-in-out; }
+
+        /* --- [頁面 1] 首頁 --- */
+        .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; text-align: center; padding: 120px 20px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 20px; letter-spacing: 2px; }
+        .hero p { font-size: 1.3rem; color: #cbd5e1; margin-bottom: 40px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .hero-btn { background: var(--neon-orange); color: white; padding: 15px 40px; font-size: 1.2rem; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; }
+
+        /* --- [頁面 2] 運作區塊 --- */
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background: white; padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .feature-icon { font-size: 3.5rem; margin-bottom: 20px; }
+
+        /* --- [頁面 3] 專案列表 --- */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
+        .card-img { width: 100%; height: 220px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; }
+        .card-content { padding: 25px; }
+        .tag { background: var(--light-gray); color: var(--text-muted); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 15px; display: inline-block; }
+        .stats-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95rem; }
+
+        /* --- [頁面 4] 專案詳情 --- */
+        .detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+        .detail-img-box { width: 100%; height: 450px; background: #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; font-size: 2rem; color: #94a3b8; }
+        .sidebar-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); position: sticky; top: 100px; }
+
+        /* --- [頁面 5] 提案上傳頁 --- */
+        .form-container { background: white; padding: 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 850px; margin: 0 auto; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 10px; color: var(--tech-blue); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px; border: 1px solid var(--light-gray); border-radius: 6px; font-size: 1rem;
+        }
+        .upload-area { border: 2px dashed var(--light-gray); padding: 50px; text-align: center; border-radius: 10px; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
+        .upload-area:hover { border-color: var(--neon-orange); background: #fff7ed; }
+
+        /* --- 頁尾 --- */
+        footer { background: var(--tech-blue); color: #94a3b8; padding: 40px 20px; text-align: center; margin-top: 60px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo" onclick="switchPage('page-home')">⚡ SparkLink</div>
+        <div class="nav-links">
+            <button onclick="switchPage('page-home')">首頁</button>
+            <button onclick="switchPage('page-about')">運作方式</button>
+            <button onclick="switchPage('page-list')">探索專案</button>
+            <button class="btn-nav-primary" onclick="switchPage('page-submit')">發起提案</button>
+        </div>
+    </nav>
+
+    <div id="page-home" class="page active">
+        <header class="hero">
+            <h1>點燃創意，連結未來</h1>
+            <p>SparkLink 是專為學生與創客打造的集資舞台，讓你的技術專題、藝術創作或數位工具，獲得全世界的支持與資金。</p>
+            <button class="hero-btn" onclick="switchPage('page-list')">立即探索創意</button>
+        </header>
+        <div class="container">
+            <h2 class="section-title">今日精選</h2>
+            <div class="project-grid">
+                <div class="card" onclick="switchPage('page-detail')">
+                    <div class="card-img" style="background: linear-gradient(45deg, #0f172a, #334155);">核心專案推薦</div>
+                    <div class="card-content">
+                        <span class="tag">科技創新</span>
+                        <h3>智慧散熱互動椅：終結久坐悶熱</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">利用物聯網感測技術，自動調節體感溫度...</p>
+                        <div class="progress-container"><div class="progress-bar" style="width: 85%;"></div></div>
+                        <div class="stats-row"><span>已籌 NT$ 42,500</span><span style="color: var(--neon-orange);">85%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-about" class="page">
+        <div class="container">
+            <h2 class="section-title">平台運作區塊</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>1. 提交專案</h3>
+                    <p>填寫你的創意計畫，上傳原型照片或影片，設定募資目標金額。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📢</div>
+                    <h3>2. 推廣與集資</h3>
+                    <p>透過社群連結，吸引認同你理念的贊助者，累積技術開發資金。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>3. 實現回饋</h3>
+                    <p>專案達標後開始製作，並將約定的產品或服務寄送給支持者。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-list" class="page">
+        <div class="container">
+            <h2 class="section-title">所有集資專案</h2>
+            <div class="project-grid">
+                <div class="card" onclick="switchPage('page-detail')">
+                    <div class="card-img" style="background: #6366f1;">硬體專案</div>
+                    <div class="card-content">
+                        <span class="tag">硬體</span>
+                        <h3>智慧散熱互動椅</h3>
+                        <div class="progress-container"><div class="progress-bar" style="width: 85%;"></div></div>
+                        <div class="stats-row"><span>NT$ 42,500</span><span>85%</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img" style="background: #f59e0b;">資安工具</div>
+                    <div class="card-content">
+                        <span class="tag">軟體</span>
+                        <h3>特種簽名辨識系統</h3>
+                        <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
+                        <div class="stats-row"><span>NT$ 60,000</span><span>100%</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img" style="background: #10b981;">遊戲周邊</div>
+                    <div class="card-content">
+                        <span class="tag">遊戲</span>
+                        <h3>Hunter's 配裝計算器</h3>
+                        <div class="progress-container"><div class="progress-bar" style="width: 45%;"></div></div>
+                        <div class="stats-row"><span>NT$ 18,000</span><span>45%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-detail" class="page">
+        <div class="container">
+            <div class="detail-grid">
+                <div>
+                    <div class="detail-img-box">專案主圖展示區</div>
+                    <div style="background: white; padding: 40px; border-radius: 12px;">
+                        <h2 style="margin-bottom: 20px;">專案介紹</h2>
+                        <p>這是針對現代人長時間在電腦前工作的「智慧散熱系統」。透過嵌入式的溫度感測器，系統能偵測臀部與背部溫度，自動啟動靜音風扇...</p>
+                        <h3 style="margin: 25px 0 15px;">技術核心</h3>
+                        <ul>
+                            <li>Arduino 控制模組與靜音渦輪風扇</li>
+                            <li>自適應 PID 控溫演算法</li>
+                            <li>低功耗藍牙 App 連動</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sidebar-box">
+                    <h2 style="color: var(--neon-orange); font-size: 2.2rem; margin-bottom: 5px;">NT$ 42,500</h2>
+                    <p style="color: var(--text-muted);">目標 NT$ 50,000</p>
+                    <div class="progress-container"><div class="progress-bar" style="width: 85%;"></div></div>
+                    <p style="margin-bottom: 20px;"><b>128</b> 人贊助 | 剩餘 <b>12</b> 天</p>
+                    <button class="btn-full" style="background: var(--neon-orange); color: white; margin-bottom: 15px;">立即贊助專案</button>
+                    <button class="btn-full" style="background: white; border: 1px solid var(--light-gray);">追蹤進度</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-submit" class="page">
+        <div class="container">
+            <h2 class="section-title">發布你的創意提案</h2>
+            <div class="form-container">
+                <form onsubmit="return false;">
+                    <div class="form-group">
+                        <label>專案標題</label>
+                        <input type="text" placeholder="請輸入吸引人的專案名稱...">
+                    </div>
+                    <div class="form-group">
+                        <label>專案分類</label>
+                        <select>
+                            <option>硬體創新</option>
+                            <option>軟體開發</option>
+                            <option>數位藝術</option>
+                            <option>在地文化</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>募資目標 (NT$)</label>
+                            <input type="number" placeholder="最低 10,000">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>募資天數</label>
+                            <input type="number" placeholder="建議 30-60 天">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>提案簡介</label>
+                        <textarea rows="4" placeholder="向贊助者簡單介紹你的專案核心價值..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>產品主圖</label>
+                        <div class="upload-area" onclick="alert('開啟檔案上傳視窗...')">
+                            <div style="font-size: 2rem;">➕</div>
+                            <p>點擊或拖曳檔案至此上傳 (建議尺寸 1200x800 px)</p>
+                        </div>
+                    </div>
+                    <button class="btn-full" style="background: var(--tech-blue); color: white; margin-top: 20px;" onclick="alert('專案已提交，請靜候管理員審核！')">確認送出提案</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SparkLink 星火鏈 | 網頁設計期末專案作品</p>
+    </footer>
+
+    <script>
+        function switchPage(pageId) {
+            // 隱藏所有頁面
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+            
+            // 顯示目標頁面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 滾動回頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
