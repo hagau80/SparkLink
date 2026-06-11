@@ -1,285 +1,687 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SparkLink 星火鏈 | 創客與學生集資平台</title>
-    <style>
-        /* --- 全域設定與變數 --- */
-        :root {
-            --tech-blue: #0f172a;
-            --neon-orange: #f97316;
-            --light-gray: #e2e8f0;
-            --bg-color: #f8fafc;
-            --text-main: #334155;
-            --text-muted: #64748b;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SparkLink 星火鏈 | 創客與學生集資平台</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+  <style>
+    :root {
+      --nav: #0f172a;
+      --nav-2: #1e293b;
+      --orange: #f97316;
+      --orange-dark: #ea580c;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #243247;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --shadow: 0 12px 32px rgba(15, 23, 42, .10);
+      --radius: 16px;
+    }
 
-        /* --- 導覽列 (Navbar) --- */
-        nav {
-            background-color: var(--tech-blue);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--neon-orange); text-decoration: none; cursor: pointer; }
-        .nav-links { display: flex; align-items: center; }
-        .nav-links button {
-            background: none; border: none; color: white; font-size: 1rem; margin-left: 20px; cursor: pointer; transition: 0.3s;
-        }
-        .nav-links button:hover { color: var(--neon-orange); }
-        .btn-nav-primary {
-            background-color: var(--neon-orange) !important;
-            color: white !important;
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "Microsoft JhengHei", sans-serif; }
+    body { background: var(--bg); color: var(--text); line-height: 1.7; }
+    button { border: 0; cursor: pointer; font: inherit; }
+    img { display: block; max-width: 100%; }
 
-        /* --- 頁面切換機制 --- */
-        .page { display: none; min-height: 80vh; animation: fadeIn 0.4s ease-in-out; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 5%;
+      background: var(--nav); color: white;
+      box-shadow: 0 3px 14px rgba(0,0,0,.22);
+    }
+    .logo { color: var(--orange); font-size: 1.45rem; font-weight: 900; cursor: pointer; }
+    .nav-links { display: flex; align-items: center; gap: 22px; }
+    .nav-links button { background: transparent; color: white; transition: .2s; }
+    .nav-links button:hover { color: var(--orange); }
+    .btn-nav-primary {
+      padding: 9px 22px; border-radius: 7px;
+      background: var(--orange) !important; color: white !important; font-weight: 800;
+    }
 
-        /* --- 共用排版元件 --- */
-        .container { width: 90%; max-width: 1200px; margin: 40px auto; }
-        .section-title { font-size: 2rem; margin-bottom: 30px; border-left: 6px solid var(--neon-orange); padding-left: 15px; }
-        .btn-full { width: 100%; padding: 14px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; text-align: center; }
-        
-        /* --- 進度條元件 --- */
-        .progress-container { width: 100%; background-color: var(--light-gray); border-radius: 10px; height: 12px; margin: 15px 0; overflow: hidden; }
-        .progress-bar { background-color: var(--neon-orange); height: 100%; border-radius: 10px; transition: width 1s ease-in-out; }
+    .page { display: none; min-height: 80vh; animation: fadeIn .28s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- [頁面 1] 首頁 --- */
-        .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; text-align: center; padding: 120px 20px; }
-        .hero h1 { font-size: 3rem; margin-bottom: 20px; letter-spacing: 2px; }
-        .hero p { font-size: 1.3rem; color: #cbd5e1; margin-bottom: 40px; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .hero-btn { background: var(--neon-orange); color: white; padding: 15px 40px; font-size: 1.2rem; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; }
+    .container { width: min(92%, 1220px); margin: 54px auto; }
+    .section-title {
+      margin-bottom: 34px; padding-left: 18px;
+      border-left: 6px solid var(--orange);
+      color: var(--nav-2); font-size: clamp(1.8rem, 3vw, 2.35rem);
+      line-height: 1.25;
+    }
 
-        /* --- [頁面 2] 運作區塊 --- */
-        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .feature-card { background: white; padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .feature-icon { font-size: 3.5rem; margin-bottom: 20px; }
+    .btn-full, .hero-btn {
+      border-radius: 8px; font-weight: 800; text-align: center; transition: .22s;
+    }
+    .btn-full { width: 100%; padding: 14px; }
+    .btn-primary, .hero-btn { background: var(--orange); color: white; }
+    .btn-primary:hover, .hero-btn:hover { background: var(--orange-dark); transform: translateY(-2px); }
+    .btn-secondary { background: white; color: var(--text); border: 1px solid var(--line); }
+    .btn-disabled { background: #94a3b8; color: white; cursor: not-allowed; }
 
-        /* --- [頁面 3] 專案列表 --- */
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
-        .card-img { width: 100%; height: 220px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; }
-        .card-content { padding: 25px; }
-        .tag { background: var(--light-gray); color: var(--text-muted); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 15px; display: inline-block; }
-        .stats-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95rem; }
+    /* 首頁標語：保留原本無卡片設計，只加遮罩與文字陰影 */
+    .hero {
+      position: relative; min-height: 620px; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 120px 20px;
+      background: url("首頁精神標語的後面背景圖.jpg") center 42% / cover no-repeat;
+      color: white; text-align: center;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(rgba(15,23,42,.54), rgba(15,23,42,.66)),
+        linear-gradient(90deg, rgba(2,6,23,.52), rgba(15,23,42,.12), rgba(2,6,23,.42));
+    }
+    .hero h1, .hero p, .hero-btn { position: relative; z-index: 1; }
+    .hero h1 {
+      margin-bottom: 20px;
+      font-size: clamp(2.35rem, 5vw, 4rem);
+      letter-spacing: 3px;
+      text-shadow: 0 7px 24px rgba(0,0,0,.68);
+    }
+    .hero p {
+      max-width: 860px; margin: 0 auto 38px;
+      color: rgba(255,255,255,.92);
+      font-size: clamp(1.06rem, 2vw, 1.35rem);
+      line-height: 1.9;
+      text-shadow: 0 4px 18px rgba(0,0,0,.72);
+    }
+    .hero-btn {
+      padding: 15px 42px; border-radius: 999px; font-size: 1.15rem;
+      box-shadow: 0 14px 28px rgba(249,115,22,.34);
+    }
 
-        /* --- [頁面 4] 專案詳情 --- */
-        .detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
-        .detail-img-box { width: 100%; height: 450px; background: #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; font-size: 2rem; color: #94a3b8; }
-        .sidebar-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); position: sticky; top: 100px; }
+    .project-grid, .feature-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 28px;
+    }
+    .card, .feature-card, .content-box, .sidebar-box, .form-container {
+      background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .card { overflow: hidden; cursor: pointer; border: 1px solid rgba(226,232,240,.9); transition: .22s; }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 18px 42px rgba(15,23,42,.14); }
+    .project-img {
+      width: 100%; height: 280px; padding: 12px;
+      object-fit: contain; background: #fff;
+    }
+    .card-content { padding: 24px 26px 26px; }
+    .card h3 { margin: 8px 0 8px; color: var(--nav); font-size: 1.22rem; }
+    .card-desc { min-height: 46px; margin-bottom: 16px; color: var(--muted); font-size: .96rem; line-height: 1.7; }
+    .tag {
+      display: inline-block; padding: 5px 13px; border-radius: 999px;
+      background: #e8eef6; color: #516173; font-size: .84rem; font-weight: 800;
+    }
+    .progress-container {
+      height: 11px; margin: 18px 0; overflow: hidden;
+      border-radius: 999px; background: var(--line);
+    }
+    .progress-bar { height: 100%; border-radius: inherit; background: var(--orange); transition: width .6s; }
+    .stats-row { display: flex; justify-content: space-between; gap: 10px; color: var(--nav); font-weight: 900; }
+    .percent { color: var(--orange); }
 
-        /* --- [頁面 5] 提案上傳頁 --- */
-        .form-container { background: white; padding: 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 850px; margin: 0 auto; }
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 10px; color: var(--tech-blue); }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 12px; border: 1px solid var(--light-gray); border-radius: 6px; font-size: 1rem;
-        }
-        .upload-area { border: 2px dashed var(--light-gray); padding: 50px; text-align: center; border-radius: 10px; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
-        .upload-area:hover { border-color: var(--neon-orange); background: #fff7ed; }
+    .feature-card { padding: 42px 32px; text-align: center; }
+    .feature-icon { margin-bottom: 18px; font-size: 3.2rem; }
 
-        /* --- 頁尾 --- */
-        footer { background: var(--tech-blue); color: #94a3b8; padding: 40px 20px; text-align: center; margin-top: 60px; }
-    </style>
+    /* 首頁精選輪播：圖片放大、文字區域留白，提升可讀性 */
+    .carousel-wrapper {
+      position: relative; display: flex; align-items: center;
+      width: min(92vw, 820px); margin: 0 auto;
+    }
+    .carousel-container { width: 100%; overflow: hidden; border-radius: 18px; }
+    .carousel-track { display: flex; transition: transform .38s ease; }
+    .carousel-track .card { flex: 0 0 100%; border-radius: 18px; }
+    .carousel-track .project-img { height: 320px; padding: 18px; background: #fff; }
+    .carousel-track .card-content { padding: 28px 34px 32px; }
+    .carousel-track .card h3 { font-size: 1.35rem; }
+    .carousel-btn {
+      position: absolute; top: 50%; z-index: 10; transform: translateY(-50%);
+      width: 46px; height: 46px; display: grid; place-items: center;
+      border-radius: 50%; background: rgba(255,255,255,.95);
+      color: var(--nav); border: 1px solid var(--line);
+      box-shadow: var(--shadow); font-size: 1.5rem; font-weight: 900;
+    }
+    .carousel-btn:hover { color: var(--orange); }
+    .carousel-btn.prev { left: -64px; }
+    .carousel-btn.next { right: -64px; }
+
+    /* 詳細頁：讓圖片完整顯示，文字與募資欄分區更明確 */
+    .detail-grid {
+      display: grid; grid-template-columns: minmax(0, 1.9fr) 360px;
+      gap: 34px; align-items: start;
+    }
+    .detail-img {
+      width: 100%; height: 460px; margin-bottom: 30px; padding: 14px;
+      object-fit: contain; border-radius: var(--radius);
+      background: white; box-shadow: var(--shadow);
+    }
+    .content-box { padding: 42px; }
+    .content-box h2 { margin-bottom: 18px; color: var(--nav); font-size: 1.6rem; }
+    .content-box p, .content-box ul { color: #475569; font-size: 1.04rem; line-height: 1.9; }
+    .content-box h3 {
+      margin: 30px 0 14px; padding-bottom: 8px;
+      color: var(--nav); border-bottom: 2px solid var(--line);
+    }
+    .content-box ul { padding-left: 22px; }
+    .content-box li { margin-bottom: 8px; }
+    .sidebar-box { position: sticky; top: 96px; padding: 32px; }
+    .amount { color: var(--orange); font-size: 2.35rem; font-weight: 950; line-height: 1.2; }
+    .goal { margin-top: 6px; color: var(--muted); }
+    .fund-meta { color: #475569; font-size: 1.02rem; }
+    .sidebar-actions { display: grid; gap: 12px; margin-top: 20px; }
+
+    .form-container { max-width: 850px; margin: 0 auto; padding: 46px; }
+    .form-row { display: flex; gap: 20px; }
+    .form-group { flex: 1; margin-bottom: 24px; }
+    .form-group label { display: block; margin-bottom: 9px; color: var(--nav); font-weight: 850; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 13px; border: 1px solid var(--line); border-radius: 8px; font-size: 1rem;
+    }
+    .upload-area {
+      min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 44px; border: 2px dashed var(--line); border-radius: 12px;
+      color: var(--muted); text-align: center; cursor: pointer; transition: .22s;
+    }
+    .upload-area:hover { border-color: var(--orange); background: #fff7ed; }
+    .upload-area img { max-height: 250px; margin-top: 10px; object-fit: contain; border-radius: 8px; }
+
+    footer {
+      margin-top: 64px; padding: 40px 20px;
+      background: var(--nav); color: #94a3b8; text-align: center;
+    }
+
+    body.loading { overflow: hidden; }
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center;
+      background: radial-gradient(circle at 50% 35%, rgba(249,115,22,.22), transparent 32%),
+                  linear-gradient(135deg, #020617, #0f172a 55%, #1e293b);
+      color: white; transition: opacity .55s ease, visibility .55s ease;
+    }
+    #preloader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-card {
+      width: min(88vw, 480px); padding: 42px 34px; border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.12); background: rgba(15,23,42,.72);
+      box-shadow: 0 24px 80px rgba(0,0,0,.35); backdrop-filter: blur(14px);
+      text-align: center; animation: loaderFloat 2.4s ease-in-out infinite;
+    }
+    .loader-logo { margin-bottom: 14px; color: var(--orange); font-size: 2.4rem; font-weight: 900; }
+    .loader-title { margin-bottom: 8px; font-size: 1.4rem; font-weight: 800; }
+    .loader-text { margin-bottom: 28px; color: #cbd5e1; }
+    .spark-loader { position: relative; width: 84px; height: 84px; margin: 0 auto 28px; }
+    .spark-loader::before, .spark-loader::after {
+      content: ""; position: absolute; inset: 0; border-radius: 50%; border: 4px solid transparent;
+    }
+    .spark-loader::before { border-top-color: var(--orange); border-right-color: var(--orange); animation: spin 1s linear infinite; }
+    .spark-loader::after { inset: 14px; border-bottom-color: #38bdf8; border-left-color: #38bdf8; animation: spinReverse 1.35s linear infinite; }
+    .spark-core {
+      position: absolute; inset: 30px; display: grid; place-items: center;
+      border-radius: 50%; background: var(--orange);
+      box-shadow: 0 0 28px rgba(249,115,22,.85);
+    }
+    .loading-bar { height: 10px; overflow: hidden; border-radius: 999px; background: rgba(226,232,240,.18); }
+    .loading-progress {
+      width: 45%; height: 100%; border-radius: inherit;
+      background: linear-gradient(90deg, var(--orange), #fb923c, #38bdf8);
+      animation: loadingMove 1.5s ease-in-out infinite;
+    }
+    .loading-note { margin-top: 14px; color: #94a3b8; font-size: .85rem; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spinReverse { to { transform: rotate(-360deg); } }
+    @keyframes loadingMove { 0% { transform: translateX(-110%); } 55% { transform: translateX(70%); } 100% { transform: translateX(250%); } }
+    @keyframes loaderFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    @media (max-width: 900px) {
+      nav, .nav-links, .form-row { flex-direction: column; }
+      .nav-links { gap: 10px; margin-top: 10px; }
+      .hero { min-height: 560px; padding: 82px 20px; background-position: center; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .sidebar-box { position: static; }
+      .carousel-wrapper { width: min(92vw, 720px); }
+      .carousel-btn.prev { left: 10px; }
+      .carousel-btn.next { right: 10px; }
+      .carousel-track .project-img, .detail-img { height: 300px; }
+      .content-box, .form-container { padding: 30px; }
+    }
+  </style>
 </head>
-<body>
 
-    <nav>
-        <div class="logo" onclick="switchPage('page-home')">⚡ SparkLink</div>
-        <div class="nav-links">
-            <button onclick="switchPage('page-home')">首頁</button>
-            <button onclick="switchPage('page-about')">運作方式</button>
-            <button onclick="switchPage('page-list')">探索專案</button>
-            <button class="btn-nav-primary" onclick="switchPage('page-submit')">發起提案</button>
-        </div>
-    </nav>
+<body class="loading">
 
-    <div id="page-home" class="page active">
-        <header class="hero">
-            <h1>點燃創意，連結未來</h1>
-            <p>SparkLink 是專為學生與創客打造的集資舞台，讓你的技術專題、藝術創作或數位工具，獲得全世界的支持與資金。</p>
-            <button class="hero-btn" onclick="switchPage('page-list')">立即探索創意</button>
-        </header>
-        <div class="container">
-            <h2 class="section-title">今日精選</h2>
-            <div class="project-grid">
-                <div class="card" onclick="switchPage('page-detail')">
-                    <div class="card-img" style="background: linear-gradient(45deg, #0f172a, #334155);">核心專案推薦</div>
-                    <div class="card-content">
-                        <span class="tag">科技創新</span>
-                        <h3>智慧散熱互動椅：終結久坐悶熱</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">利用物聯網感測技術，自動調節體感溫度...</p>
-                        <div class="progress-container"><div class="progress-bar" style="width: 85%;"></div></div>
-                        <div class="stats-row"><span>已籌 NT$ 42,500</span><span style="color: var(--neon-orange);">85%</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div id="preloader">
+    <div class="loader-card">
+      <div class="loader-logo">⚡ SparkLink</div>
+      <div class="spark-loader">
+        <div class="spark-core">✦</div>
+      </div>
+      <div class="loader-title">正在點燃學生創意</div>
+      <p class="loader-text">載入元智學生募資專案中，準備連結下一個可能。</p>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+      <div class="loading-note">Student Crowdfunding Platform</div>
     </div>
+  </div>
 
-    <div id="page-about" class="page">
-        <div class="container">
-            <h2 class="section-title">平台運作區塊</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📁</div>
-                    <h3>1. 提交專案</h3>
-                    <p>填寫你的創意計畫，上傳原型照片或影片，設定募資目標金額。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📢</div>
-                    <h3>2. 推廣與集資</h3>
-                    <p>透過社群連結，吸引認同你理念的贊助者，累積技術開發資金。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📦</div>
-                    <h3>3. 實現回饋</h3>
-                    <p>專案達標後開始製作，並將約定的產品或服務寄送給支持者。</p>
-                </div>
-            </div>
-        </div>
+
+  <nav>
+    <div class="logo" onclick="switchPage('page-home')">⚡ SparkLink</div>
+    <div class="nav-links">
+      <button onclick="switchPage('page-home')">首頁</button>
+      <button onclick="switchPage('page-about')">運作方式</button>
+      <button onclick="switchPage('page-list')">探索專案</button>
+      <button class="btn-nav-primary" onclick="switchPage('page-submit')">發起提案</button>
     </div>
+  </nav>
 
-    <div id="page-list" class="page">
-        <div class="container">
-            <h2 class="section-title">所有集資專案</h2>
-            <div class="project-grid">
-                <div class="card" onclick="switchPage('page-detail')">
-                    <div class="card-img" style="background: #6366f1;">硬體專案</div>
-                    <div class="card-content">
-                        <span class="tag">硬體</span>
-                        <h3>智慧散熱互動椅</h3>
-                        <div class="progress-container"><div class="progress-bar" style="width: 85%;"></div></div>
-                        <div class="stats-row"><span>NT$ 42,500</span><span>85%</span></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-img" style="background: #f59e0b;">資安工具</div>
-                    <div class="card-content">
-                        <span class="tag">軟體</span>
-                        <h3>特種簽名辨識系統</h3>
-                        <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
-                        <div class="stats-row"><span>NT$ 60,000</span><span>100%</span></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-img" style="background: #10b981;">遊戲周邊</div>
-                    <div class="card-content">
-                        <span class="tag">遊戲</span>
-                        <h3>Hunter's 配裝計算器</h3>
-                        <div class="progress-container"><div class="progress-bar" style="width: 45%;"></div></div>
-                        <div class="stats-row"><span>NT$ 18,000</span><span>45%</span></div>
-                    </div>
-                </div>
-            </div>
+  <main>
+    <section id="page-home" class="page active">
+      <header class="hero">
+        <h1>點燃創意，連結未來</h1>
+        <p>SparkLink 是專為學生與創客打造的集資舞台，讓你的技術專題、藝術創作或數位工具，獲得全世界的支持與資金。</p>
+        <button class="hero-btn" onclick="switchPage('page-list')">立即探索創意</button>
+      </header>
+
+      <div class="container">
+        <h2 class="section-title">今日精選</h2>
+        <div class="carousel-wrapper">
+          <button class="carousel-btn prev" onclick="moveSlide(-1)">&lt;</button>
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack"></div>
+          </div>
+          <button class="carousel-btn next" onclick="moveSlide(1)">&gt;</button>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <div id="page-detail" class="page">
-        <div class="container">
+    <section id="page-about" class="page">
+      <div class="container">
+        <h2 class="section-title">平台運作區塊</h2>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon">📁</div>
+            <h3>1. 提交專案</h3>
+            <p>填寫你的創意計畫，上傳原型照片或影片，設定募資目標金額。</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">📢</div>
+            <h3>2. 推廣與集資</h3>
+            <p>透過社群連結，吸引認同你理念的贊助者，累積技術開發資金。</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>3. 實現回饋</h3>
+            <p>專案達標後開始製作，並將約定的產品或服務寄送給支持者。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-list" class="page">
+      <div class="container">
+        <h2 class="section-title">所有集資專案</h2>
+        <div class="project-grid" id="projectGridContainer"></div>
+      </div>
+    </section>
+
+    <section id="page-submit" class="page">
+      <div class="container">
+        <h2 class="section-title">發布你的創意提案</h2>
+
+        <div class="form-container">
+          <form id="proposalForm" onsubmit="return false;">
+            <div class="form-group">
+              <label for="pTitle">專案標題</label>
+              <input type="text" id="pTitle" placeholder="請輸入吸引人的專案名稱..." />
+            </div>
+
+            <div class="form-group">
+              <label for="pCategory">專案分類</label>
+              <select id="pCategory">
+                <option value="硬體創新">硬體創新</option>
+                <option value="軟體開發">軟體開發</option>
+                <option value="教育科技">教育科技</option>
+                <option value="ESG永續">ESG永續</option>
+                <option value="文創設計">文創設計</option>
+                <option value="遊戲周邊">遊戲周邊</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pGoal">募資目標 NT$</label>
+                <input type="number" id="pGoal" placeholder="最低 10,000" />
+              </div>
+
+              <div class="form-group">
+                <label for="pDays">募資天數</label>
+                <input type="number" id="pDays" placeholder="建議 30-60 天" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="pIntro">提案簡介</label>
+              <textarea id="pIntro" rows="4" placeholder="向贊助者簡單介紹你的專案核心價值..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>產品主圖</label>
+              <input type="file" id="fileInput" accept="image/*" hidden onchange="handleFileSelect(this)" />
+              <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div style="font-size: 2rem;">➕</div>
+                <p>點擊或拖曳檔案至此上傳，建議尺寸 1200 × 675 px</p>
+              </div>
+            </div>
+
+            <button class="btn-full btn-primary" onclick="validateAndSubmit()">確認送出提案</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div id="projectDetailsContainer"></div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 SparkLink 星火鏈 | 網頁設計期末專案作品</p>
+  </footer>
+
+
+  <script>
+    const projects = [
+      {
+        id: "chair",
+        title: "智慧散熱互動椅",
+        category: "硬體創新",
+        image: "project1.jpg",
+        goal: 50000,
+        raised: 42500,
+        percent: 85,
+        supporters: 128,
+        days: 12,
+        status: "active",
+        shortDesc: "利用物聯網感測技術，自動調節體感溫度。",
+        intro: "這是由元智大學資訊傳播學系團隊研發，針對現代人長時間在電腦前工作的智慧散熱系統。透過嵌入式溫度感測器，系統能偵測臀部與背部溫度，自動啟動靜音風扇，終結久坐帶來的悶熱感與不適。",
+        tech: [
+          "Arduino 控制模組與靜音渦輪風扇集成技術",
+          "自適應 PID 控溫演算法，隨環境自動調節風速",
+          "低功耗藍牙 BLE 專屬 App 連動，掌握每日坐姿數據"
+        ]
+      },
+      {
+        id: "signature",
+        title: "特種簽名辨識系統",
+        category: "軟體開發",
+        image: "project2.jpg",
+        goal: 60000,
+        raised: 60000,
+        percent: 100,
+        supporters: 245,
+        days: 0,
+        status: "finished",
+        shortDesc: "運用深度學習神經網路，精準識別簽名筆觸與力道。",
+        intro: "本專案由元智大學資訊工程學系團隊開發。因應數位金融與電子合約的普及，傳統視覺簽名驗證極易遭到臨摹偽造。本系統採用 AI 技術，不只辨識筆跡外型，也能偵測動態軌跡，提升簽名防偽能力。",
+        tech: [
+          "深度學習卷積神經網路 CNN 結合 LSTM 時間序列模型",
+          "動態壓感與行筆速度特徵擷取演算法",
+          "跨平台 Web API 封裝，可快速對接電子簽章系統"
+        ]
+      },
+      {
+        id: "hunter",
+        title: "Hunter's 配裝計算器",
+        category: "遊戲周邊",
+        image: "project3.jpg",
+        goal: 40000,
+        raised: 18000,
+        percent: 45,
+        supporters: 64,
+        days: 25,
+        status: "active",
+        shortDesc: "一鍵匯入護石與裝備，自動演算出最高傷害期望值。",
+        intro: "本專案由元智大學資訊管理學系熱愛遊戲的學生團隊打造。針對動作遊戲內複雜的裝備與護石系統，傳統手動配裝費時且難以達到最佳解，因此我們開發雲端高效能計算器，協助玩家快速找到最適合的流派。",
+        tech: [
+          "啟發式動態規劃 Dynamic Programming 剪枝搜尋演算法",
+          "前端資料響應式快取設計，數萬種組合快速反應",
+          "自動化社群文本爬蟲，即時更新遊戲資料庫版本"
+        ]
+      },
+      {
+        id: "edulens",
+        title: "EduLens AI 智慧課堂助教眼鏡",
+        category: "教育科技",
+        image: "project4.jpg",
+        goal: 80000,
+        raised: 54000,
+        percent: 68,
+        supporters: 172,
+        days: 18,
+        status: "active",
+        shortDesc: "AI 語音辨識與 AR 顯示，讓課堂重點不再漏接。",
+        intro: "由資訊工程、電機工程與應用外語系跨域合作開發。透過 AI 語音辨識與 AR 顯示技術，協助學生即時取得課堂重點、翻譯與筆記整理，讓學習更有效率。",
+        tech: [
+          "ChatGPT AI 語意分析",
+          "AR 智慧顯示技術",
+          "即時語音轉文字",
+          "雲端同步筆記系統"
+        ]
+      },
+      {
+        id: "greencycle",
+        title: "GreenCycle 智慧循環回收站",
+        category: "ESG永續",
+        image: "project5.jpg",
+        goal: 100000,
+        raised: 76000,
+        percent: 76,
+        supporters: 235,
+        days: 11,
+        status: "active",
+        shortDesc: "AI 影像辨識回收物，讓環保像遊戲一樣有趣。",
+        intro: "由工管、機械與資管系共同打造。利用 AI 影像辨識與物聯網技術，自動辨識回收物並提供積分獎勵，提升校園回收參與度，也讓 ESG 數據可以被清楚追蹤。",
+        tech: [
+          "YOLO 影像辨識模型",
+          "ESP32 物聯網控制器",
+          "RFID 會員積分系統",
+          "ESG 數據分析平台"
+        ]
+      },
+      {
+        id: "moodcraft",
+        title: "MoodCraft 心情共息拼豆燈",
+        category: "文創設計",
+        image: "project6.jpg",
+        goal: 60000,
+        raised: 31500,
+        percent: 53,
+        supporters: 96,
+        days: 22,
+        status: "active",
+        shortDesc: "拼豆創作結合智慧燈光，打造個人化療癒空間。",
+        intro: "由藝術設計、資訊傳播與電機工程系合作。結合拼豆藝術、情緒療癒與智慧燈光互動技術，使用者可透過手機選擇不同心情模式，讓燈光自動變換色彩與動畫效果。",
+        tech: [
+          "WS2812 RGB 燈條",
+          "ESP32 WiFi 控制",
+          "情緒辨識互動系統",
+          "模組化拼豆創作設計"
+        ]
+      }
+    ];
+
+    let uploadedImgUrl = "";
+    let isMoving = false;
+
+    const $ = id => document.getElementById(id);
+    const money = n => `NT$ ${Number(n).toLocaleString("zh-TW")}`;
+    const shortText = (text, length = 48) => text.length > length ? `${text.slice(0, length)}...` : text;
+
+    function switchPage(pageId) {
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      const page = $(pageId);
+      if (page) page.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function projectCardTemplate(project, isCarousel = false) {
+      return `
+        <article class="card" onclick="switchPage('page-detail-${project.id}')">
+          <img class="project-img" src="${project.image}" alt="${project.title}">
+          <div class="card-content">
+            <span class="tag">${project.category}</span>
+            <h3>${project.title}</h3>
+            ${isCarousel ? `<p class="card-desc">${shortText(project.shortDesc || project.intro)}</p>` : ""}
+            <div class="progress-container"><div class="progress-bar" style="width:${project.percent}%"></div></div>
+            <div class="stats-row">
+              <span>${isCarousel ? "已籌 " : ""}${money(project.raised)}</span>
+              <span class="percent">${project.percent}%</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function projectDetailTemplate(project) {
+      const finished = project.status === "finished";
+
+      return `
+        <section id="page-detail-${project.id}" class="page">
+          <div class="container">
             <div class="detail-grid">
-                <div>
-                    <div class="detail-img-box">專案主圖展示區</div>
-                    <div style="background: white; padding: 40px; border-radius: 12px;">
-                        <h2 style="margin-bottom: 20px;">專案介紹</h2>
-                        <p>這是針對現代人長時間在電腦前工作的「智慧散熱系統」。透過嵌入式的溫度感測器，系統能偵測臀部與背部溫度，自動啟動靜音風扇...</p>
-                        <h3 style="margin: 25px 0 15px;">技術核心</h3>
-                        <ul>
-                            <li>Arduino 控制模組與靜音渦輪風扇</li>
-                            <li>自適應 PID 控溫演算法</li>
-                            <li>低功耗藍牙 App 連動</li>
-                        </ul>
-                    </div>
+              <div>
+                <img class="detail-img" src="${project.image}" alt="${project.title} 專案主圖">
+                <article class="content-box">
+                  <h2>專案介紹</h2>
+                  <p>${project.intro}</p>
+                  <h3>技術核心</h3>
+                  <ul>${project.tech.map(item => `<li>${item}</li>`).join("")}</ul>
+                </article>
+              </div>
+
+              <aside class="sidebar-box">
+                <div class="amount">${money(project.raised)}</div>
+                <p class="goal">目標 ${money(project.goal)}</p>
+                <div class="progress-container"><div class="progress-bar" style="width:${project.percent}%"></div></div>
+                <p class="fund-meta">
+                  ${finished ? '<b class="percent">已達標！</b> ' : ""}
+                  <b>${project.supporters}</b> 人贊助 |
+                  ${finished ? "募資已成功結束" : `剩餘 <b>${project.days}</b> 天`}
+                </p>
+                <div class="sidebar-actions">
+                  <button class="btn-full ${finished ? "btn-disabled" : "btn-primary"}" ${finished ? "disabled" : "onclick=\"alert('感謝您的支持！這是模擬結帳流程。')\""}>
+                    ${finished ? "募資已結束" : "立即贊助專案"}
+                  </button>
+                  <button class="btn-full btn-secondary" onclick="alert('已將此專案加入追蹤！')">
+                    ${finished ? "觀看成果報告" : "追蹤進度"}
+                  </button>
                 </div>
-                <div class="sidebar-box">
-                    <h2 style="color: var(--neon-orange); font-size: 2.2rem; margin-bottom: 5px;">NT$ 42,500</h2>
-                    <p style="color: var(--text-muted);">目標 NT$ 50,000</p>
-                    <div class="progress-container"><div class="progress-bar" style="width: 85%;"></div></div>
-                    <p style="margin-bottom: 20px;"><b>128</b> 人贊助 | 剩餘 <b>12</b> 天</p>
-                    <button class="btn-full" style="background: var(--neon-orange); color: white; margin-bottom: 15px;">立即贊助專案</button>
-                    <button class="btn-full" style="background: white; border: 1px solid var(--light-gray);">追蹤進度</button>
-                </div>
+              </aside>
             </div>
-        </div>
-    </div>
+          </div>
+        </section>
+      `;
+    }
 
-    <div id="page-submit" class="page">
-        <div class="container">
-            <h2 class="section-title">發布你的創意提案</h2>
-            <div class="form-container">
-                <form onsubmit="return false;">
-                    <div class="form-group">
-                        <label>專案標題</label>
-                        <input type="text" placeholder="請輸入吸引人的專案名稱...">
-                    </div>
-                    <div class="form-group">
-                        <label>專案分類</label>
-                        <select>
-                            <option>硬體創新</option>
-                            <option>軟體開發</option>
-                            <option>數位藝術</option>
-                            <option>在地文化</option>
-                        </select>
-                    </div>
-                    <div style="display: flex; gap: 20px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label>募資目標 (NT$)</label>
-                            <input type="number" placeholder="最低 10,000">
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label>募資天數</label>
-                            <input type="number" placeholder="建議 30-60 天">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>提案簡介</label>
-                        <textarea rows="4" placeholder="向贊助者簡單介紹你的專案核心價值..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>產品主圖</label>
-                        <div class="upload-area" onclick="alert('開啟檔案上傳視窗...')">
-                            <div style="font-size: 2rem;">➕</div>
-                            <p>點擊或拖曳檔案至此上傳 (建議尺寸 1200x800 px)</p>
-                        </div>
-                    </div>
-                    <button class="btn-full" style="background: var(--tech-blue); color: white; margin-top: 20px;" onclick="alert('專案已提交，請靜候管理員審核！')">確認送出提案</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    function renderProjects() {
+      $("projectGridContainer").innerHTML = projects.map(project => projectCardTemplate(project)).join("");
+      $("carouselTrack").innerHTML = projects.map(project => projectCardTemplate(project, true)).join("");
+      $("projectDetailsContainer").innerHTML = projects.map(project => projectDetailTemplate(project)).join("");
+    }
 
-    <footer>
-        <p>&copy; 2026 SparkLink 星火鏈 | 網頁設計期末專案作品</p>
-    </footer>
+    function moveSlide(direction) {
+      if (isMoving) return;
+      isMoving = true;
 
-    <script>
-        function switchPage(pageId) {
-            // 隱藏所有頁面
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(p => p.classList.remove('active'));
-            
-            // 顯示目標頁面
-            document.getElementById(pageId).classList.add('active');
-            
-            // 滾動回頂部
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+      const track = $("carouselTrack");
+      const slides = [...track.children];
+      if (!slides.length) return isMoving = false;
+
+      if (direction > 0) {
+        track.style.transition = "transform .38s ease";
+        track.style.transform = "translateX(-100%)";
+        setTimeout(() => {
+          track.style.transition = "none";
+          track.appendChild(slides[0]);
+          track.style.transform = "translateX(0)";
+          isMoving = false;
+        }, 380);
+      } else {
+        track.style.transition = "none";
+        track.insertBefore(slides.at(-1), slides[0]);
+        track.style.transform = "translateX(-100%)";
+        track.offsetHeight;
+        track.style.transition = "transform .38s ease";
+        track.style.transform = "translateX(0)";
+        setTimeout(() => isMoving = false, 380);
+      }
+    }
+
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      uploadedImgUrl = URL.createObjectURL(file);
+      $("uploadArea").innerHTML = `
+        <p style="color:var(--orange);font-weight:800;">圖片上傳成功！</p>
+        <img src="${uploadedImgUrl}" alt="預覽圖">
+        <p style="font-size:.85rem;color:var(--muted);margin-top:5px;">點擊可重新更換圖片</p>
+      `;
+    }
+
+    function validateAndSubmit() {
+      const title = $("pTitle").value.trim();
+      const category = $("pCategory").value;
+      const goal = Number($("pGoal").value);
+      const days = Number($("pDays").value);
+      const intro = $("pIntro").value.trim();
+
+      if (!title) return alertAndFocus("請輸入專案標題！", "pTitle");
+      if (!goal || goal < 10000) return alertAndFocus("請輸入有效的募資目標金額，最低 10,000！", "pGoal");
+      if (!days || days <= 0) return alertAndFocus("請輸入合適的募資天數！", "pDays");
+      if (!intro) return alertAndFocus("請輸入提案簡介！", "pIntro");
+      if (!uploadedImgUrl) return alert("請務必上傳一張產品主圖！");
+
+      projects.push({
+        id: `new-${Date.now()}`,
+        title, category, image: uploadedImgUrl, goal,
+        raised: 0, percent: 0, supporters: 0, days,
+        status: "active", shortDesc: intro, intro,
+        tech: [
+          `分類標籤：${category}`,
+          `預估募資天數：${days} 天`,
+          "此專案由 SparkLink 新星提案者發起，正等待最初的火花注入。"
+        ]
+      });
+
+      renderProjects();
+      resetProposalForm();
+      alert("恭喜！您的創意專案已成功發布至 SparkLink 平台！");
+      switchPage("page-list");
+    }
+
+    function alertAndFocus(message, inputId) {
+      alert(message);
+      $(inputId).focus();
+    }
+
+    function resetProposalForm() {
+      $("proposalForm").reset();
+      $("uploadArea").innerHTML = `
+        <div style="font-size:2rem;">➕</div>
+        <p>點擊或拖曳檔案至此上傳，建議尺寸 1200 × 675 px</p>
+      `;
+      uploadedImgUrl = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", renderProjects);
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        $("preloader").classList.add("hide");
+        document.body.classList.remove("loading");
+      }, 1000);
+    });
+  </script>
+
 </body>
 </html>
